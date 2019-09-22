@@ -1,0 +1,22 @@
+server:
+  port: 8888
+eureka:
+  instance:
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 10
+  client:
+    registry-fetch-interval-seconds: 10
+    serviceUrl:
+      defaultZone: http://localhost:2000/eureka
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream, info, health
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 30000

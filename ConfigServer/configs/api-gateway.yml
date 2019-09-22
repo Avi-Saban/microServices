@@ -1,0 +1,52 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+      - id: userService
+        uri: lb://user-service
+        predicates:
+        - Path=/users/**
+        filters:
+        - RewritePath=/users/(?<segment>.*), /$\{segment}
+        - name: Hystrix
+          args:
+            name: monitor-users
+            fallbackUri: forward:/fallback/user
+      - id: PaymentService
+        uri: lb://payment-service
+        predicates:
+        - Path=/pays/**
+        filters:
+        - RewritePath=/pays/(?<segment>.*), /$\{segment}
+        - name: Hystrix
+          args:
+            name: monitor-pays
+            fallbackUri: forward:/fallback/pay  
+      - id: MQActivityService
+        uri: lb://mqlistener-service
+        predicates:
+        - Path=/mq/**
+        filters:
+        - RewritePath=/mq/(?<segment>.*), /$\{segment} 
+eureka:
+  client:
+    registry-fetch-interval-seconds: 10
+    serviceUrl:
+      defaultZone: http://localhost:2000/eureka
+   
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream, info, health
+           
+#logging:
+#  level:
+#    org.springframework.cloud.gateway: TRACE
+#    org.springframework.http.server.reactive: DEBUG
+#    org.springframework.web.reactive: DEBUG
+#    reactor.ipc.netty: DEBUG
+#    reactor.netty: DEBUG
