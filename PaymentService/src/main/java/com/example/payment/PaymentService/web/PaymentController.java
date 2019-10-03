@@ -1,4 +1,4 @@
-package com.example.payment.PaymentService;
+package com.example.payment.PaymentService.web;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +10,7 @@ public class PaymentController {
     @Value("${eureka.instance.instanceId}")
     private String instanceId;
 
-    @GetMapping("pay/msg")
+    @GetMapping("payment/message")
     public String payment() {
         return "Payment-Service instanceId:" + instanceId;
     }
